@@ -68,6 +68,15 @@ def build_llm(cfg: dict):
     if provider == "anthropic":
         return ChatAnthropic(model="claude-4-opus", api_key=api_key, temperature=0.3)
 
+    if provider == "qwen":
+        # 通义千问 - 使用 OpenAI 兼容接口
+        return ChatOpenAI(
+            model=model_name or "qwen-vl-max",
+            openai_api_base=base_url or "https://dashscope.aliyuncs.com/compatible-mode/v1",
+            openai_api_key=api_key,
+            temperature=0.3,
+        )
+
     raise ValueError(f"Unknown llm provider '{provider}'")
 
 # ---------- Main ------------------------------------------------------------
@@ -137,6 +146,8 @@ def main(config_path: str = "config.json"):
 
 # ---------- CLI -------------------------------------------------------------
 if __name__ == "__main__":
+
+    # 创建一个images目录
     os.makedirs("images", exist_ok=True)
     parser = argparse.ArgumentParser(description="Run the TuriX agent.")
     parser.add_argument(
